@@ -1,0 +1,16 @@
+{
+    "__apiKey_comment": "Please change the api key before using",
+    "apiKey": "EBF3gZejQ8uUyQxS",
+    "hostIP": "127.0.0.1",
+    "hostPort": "3003",
+    "maxReadLength": 50,
+    "servers": [
+        {
+            "serverID": "s1",
+            "name": "ExpGaming S1 - Public",
+            "info": "./test/factorio1/server-info.json",
+            "bans": "./test/factorio1/banlist.json",
+            "discordEmit": "./test/factorio1/embeded.json"
+        }
+    ]
+}
