@@ -21,9 +21,11 @@ App.param('serverID',(req,res,next,serverID) => {
 })
 
 App.get('/:serverID',(req,res) => res.redirect(`/${req.server.serverID}/info`))
-App.use('/:serverID/info',require('./routes/info'))
-App.use('/:serverID/bans',isAuthenticated,require('./routes/bans'))
-App.use('/:serverID/discordEmit',isAuthenticated,require('./routes/discordEmit'))
+App.use('/:serverID/info',require('./routes/json')('info'))
+App.use('/:serverID/bans',isAuthenticated,require('./routes/json')('bans'))
+App.use('/:serverID/console',require('./routes/textLog')('console'))
+App.use('/:serverID/roles',isAuthenticated,require('./routes/jsonLog')('roles'))
+App.use('/:serverID/discordEmit',isAuthenticated,require('./routes/jsonLog')('discordEmit'))
 
 App.listen(config.hostPort,config.hostIP,() => {
     console.log(`Listening on: ${config.hostIP}:${config.hostPort}`)

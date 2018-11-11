@@ -10,7 +10,9 @@
             "name": "ExpGaming S1 - Public",
             "info": "./test/factorio1/server-info.json",
             "bans": "./test/factorio1/banlist.json",
-            "discordEmit": "./test/factorio1/embeded.json"
+            "discordEmit": "./test/factorio1/embeded.json",
+            "console": "./test/factorio1/console.log",
+            "roles": "./test/factorio1/role-change.json"
         }
     ]
 }
