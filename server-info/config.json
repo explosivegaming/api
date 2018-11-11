@@ -1,8 +1,6 @@
 {
     "__apiKey_comment": "Please change the api key before using",
     "apiKey": "EBF3gZejQ8uUyQxS",
-    "hostIP": "127.0.0.1",
-    "hostPort": "3003",
     "maxReadLength": 50,
     "servers": [
         {

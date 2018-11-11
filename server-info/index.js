@@ -1,8 +1,6 @@
 const Express = require('express')
-const enableWs = require('express-ws')
 const config = require('./config.json')
 const App = Express()
-enableWs(App)
 
 function isAuthenticated(req,res,next) {
     if (req.query.key == config.apiKey) return next()
@@ -27,6 +25,4 @@ App.use('/:serverID/console',require('./routes/textLog')('console'))
 App.use('/:serverID/roles',isAuthenticated,require('./routes/jsonLog')('roles'))
 App.use('/:serverID/discordEmit',isAuthenticated,require('./routes/jsonLog')('discordEmit'))
 
-App.listen(config.hostPort,config.hostIP,() => {
-    console.log(`Listening on: ${config.hostIP}:${config.hostPort}`)
-})
+module.exports = App

@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
  
-const ws = new WebSocket('http://localhost:3003/s1/discordEmit/feed?key=EBF3gZejQ8uUyQxS');
+const ws = new WebSocket('http://localhost:3003/serverInfo/s1/console/feed?key=EBF3gZejQ8uUyQxS');
  
 ws.on('open',() => {
     console.log('Connected');
