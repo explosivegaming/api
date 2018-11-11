@@ -11,7 +11,7 @@ function createLog(logName) {
         let limit = req.query.limit || 10
         if (limit > config.maxReadLength) limit = config.maxReadLength
         readLastLines(server[logName],limit).catch(err => {
-            res.status(404).send('Emit File Not Found.')
+            res.status(404).send('Server missing file.')
         }).then(lines => {
             lines = lines.split('\n')
             lines.pop()

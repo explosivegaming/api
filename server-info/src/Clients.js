@@ -5,7 +5,11 @@ class Clients {
         this.clients = {}
         config.servers.forEach(server => {
             this.clients[server.serverID] = []
-            callback(server,this.clients[server.serverID])
+            try {
+                callback(server,this.clients[server.serverID])
+            } catch (err) {
+                delete this.clients[server.serverID]
+            }
         })
     }
     addClient(serverID,ws) {

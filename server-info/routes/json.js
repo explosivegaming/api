@@ -7,7 +7,7 @@ function createLog(logName) {
     Router.get('/',(req,res) => {
         const server = req.server
         fs.readFile(server[logName],(err,data) => {
-            if (err) res.status(404).send('Info File Not Found.')
+            if (err) res.status(404).send('Server missing file.')
             else res.status(200).json(JSON.parse(data))
         })
     })
@@ -16,11 +16,13 @@ function createLog(logName) {
         fs.watch(server[logName]).on('change',() => {
             fs.readFile(server[logName],(err,data) => {
                 clients.forEach(ws => {
-                    if (err) ws.close(404,'Info File Not Found.')
+                    if (err) ws.close(404,'Server missing file.')
                     else if (ws.readyState == 1) ws.send(data)
                     else Clients.removeClient(serverID,ws)
                 })
             })
+        }).on('error',err => {
+            clients.forEach(ws => ws.close(500))
         })
     })
 
