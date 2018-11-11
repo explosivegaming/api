@@ -6,8 +6,8 @@ ws.on('open',() => {
     console.log('Connected');
 });
  
-ws.on('close',() => {
-    console.log('Disconnected');
+ws.on('close',(code,reason) => {
+    console.log(`Disconnected - ${code}: ${reason}`);
 });
 
 ws.on('message',data => {

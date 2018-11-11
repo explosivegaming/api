@@ -16,6 +16,7 @@ Router.get('/',(req,res) => {
         lines = lines.split('\n')
         lines.pop()
         res.status(200).json(lines.map(line => {
+            line = line.replace('${serverName}',server.name)
             try {
                 return JSON.parse(line)
             } catch (err) {
@@ -35,7 +36,7 @@ const Clients = new createClients((server,clients) => {
     const tail = new Tail(server.discordEmit)
     tail.on('line',data => {
         clients.forEach(ws => {
-            if (ws.readyState == 1) ws.send(data)
+            if (ws.readyState == 1) ws.send(data.replace('${serverName}',server.name))
             else if (ws.readyState > 1) Clients.removeClient(serverID,ws)
         })
     })
