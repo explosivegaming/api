@@ -1,19 +1,29 @@
 const Express = require('express')
 const enableWs = require('express-ws')
-const config = require('./config.json')
 require('dotenv').config()
 const App = Express()
 enableWs(App)
 
-const modules = {
+const webModules = {
     "serverInfo": "./server-info/index"
 }
 
-for (let module_name in modules) {
-    console.log(`Starting Modules: ${module_name}`)
+const modules = {
+
+}
+
+console.log('Loading Web Modules...')
+for (let module_name in webModules) {
+    console.log(`Starting Module: ${module_name}`)
     App.use('/'+module_name,require(modules[module_name]))
 }
 
-App.listen(config.hostPort,config.hostIP,() => {
-    console.log(`Listening on: ${config.hostIP}:${config.hostPort}`)
+console.log('Loading Other Modules...')
+for (let module_name in webModules) {
+    console.log(`Starting Module: ${module_name}`)
+    require(modules[module_name])
+}
+
+App.listen(process.env.HOST_PORT,process.env.HOST_IP,() => {
+    console.log(`Listening on: ${process.env.HOST_IP}:${process.env.HOST_PORT}`)
 })
