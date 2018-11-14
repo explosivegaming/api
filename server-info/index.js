@@ -3,7 +3,7 @@ const config = require('./config.json')
 const App = Express()
 
 function isAuthenticated(req,res,next) {
-    if (req.query.key == config.apiKey) return next()
+    if (req.query.key == process.env.API_KEY) return next()
     res.status(401).send('Missing or invalid api key.')
 }
 

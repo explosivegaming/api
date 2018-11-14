@@ -1,6 +1,7 @@
 const Express = require('express')
 const enableWs = require('express-ws')
 const config = require('./config.json')
+require('dotenv').config()
 const App = Express()
 enableWs(App)
 
