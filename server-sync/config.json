@@ -1,11 +1,14 @@
 {
     "defaultRoleJson": "./test/roles.json",
-    "scenarioSyncVersion": "4.0.0",
+    "fifoFile": "./server-sync.fifo",
+    "scenarioSyncVersion": "3.6.0",
     "servers": [
         {
             "serverID": "s1",
             "name": "ExpGaming S1 - Public",
-            "description": "Welcome to one of our public reset servers; we aim to make large bases and expansive train network. Science production and rockets are the primary goal."
+            "description": "Welcome to one of our public reset servers; we aim to make large bases and expansive train network. Science production and rockets are the primary goal.",
+            "autoSync": true,
+            "api": false
         }
     ]
 }
