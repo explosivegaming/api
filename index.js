@@ -9,7 +9,7 @@ const webModules = {
 }
 
 const modules = {
-
+    "serverSync": "./server-sync/index"
 }
 
 console.log('Loading Web Modules...')
