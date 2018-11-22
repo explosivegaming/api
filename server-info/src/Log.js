@@ -6,10 +6,10 @@ const config = require('../config.json')
 const fs = require('fs')
 
 class Log {
-    constructor(name,mode,onUpdate) {
+    constructor(name,mode,onData) {
         this.name = name
         this.mode = mode
-        this.onUpdate = onUpdate
+        this.onData = onData
         this.clientManager = this.createClientManager()
         this.router = Router()
 
@@ -33,7 +33,7 @@ class Log {
                     }).then(lines => {
                         lines = lines.split('\n')
                         lines.pop()
-                        res.status(200).json(this.onUpdate(lines,server))
+                        res.status(200).json(lines.map(line => this.onData(line,server)))
                     }).catch(err => {
                         res.status(500)
                         console.log(err)
@@ -42,7 +42,7 @@ class Log {
                 case 'json':
                     fs.readFile(server[this.name],(err,data) => {
                         if (err) res.status(404).send('Server missing file.')
-                        else res.status(200).json(this.onUpdate(data,server))
+                        else res.status(200).json(this.onData(data,server))
                     })
                     break
                 default:
@@ -52,32 +52,17 @@ class Log {
     }
 
     createClientManager() {
-        return new ClientManager((server,clients) => {
+        return new ClientManager((server,sendData,closeClients) => {
             switch (this.mode) {
                 case 'tail':
                     this.tail = new Tail(server[this.name])
-                    tail.on('line',data => {
-                        clients.forEach(ws => {
-                            if (ws.readyState == 1) ws.send(JSON.stringify(this.onUpdate([data],server)[0]))
-                            else if (ws.readyState > 1) this.clientManager.removeClient(serverID,ws)
-                        })
-                    })
-                    tail.on('error',err => {
-                        clients.forEach(ws => ws.close(500))
-                    })
+                    tail.on('line',data => sendData(undefined,this.onData(data,server)))
+                    tail.on('error',err => closeClients(500))
                     break
                 case 'json':
-                    fs.watch(server[this.name]).on('change',() => {
-                        fs.readFile(server[this.name],(err,data) => {
-                            clients.forEach(ws => {
-                                if (err) ws.close(404,'Server missing file.')
-                                else if (ws.readyState == 1) ws.send(JSON.stringify(this.onUpdate(data,server)))
-                                else this.clientManager.removeClient(serverID,ws)
-                            })
-                        })
-                    }).on('error',err => {
-                        clients.forEach(ws => ws.close(500))
-                    })
+                    fs.watch(server[this.name])
+                    .on('change',() => {fs.readFile(server[this.name],(err,data) => sendData(err,this.onData(data,server)))})
+                    .on('error',err => closeClients(500))
                     break
                 default:
                     console.log('Invalid Log Mode: '+this.mode)
