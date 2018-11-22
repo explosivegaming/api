@@ -1,5 +1,5 @@
 {
-    "defaultRoleJson": "./test/roles.json",
+    "defaultRoleJson": "../test/roles.json",
     "fifoFile": "./server-sync.fifo",
     "scenarioSyncVersion": "3.6.0",
     "servers": [
