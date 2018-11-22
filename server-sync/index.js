@@ -33,10 +33,11 @@ let sendCMD = (function () {
         }
     }
     // sendCMD function - sends the command to the server
-    return function (server, cmd, max=10, timeout=50, next) {
+    return function (server, cmd, max=10, timeout=50, next=() => {}) {
+        if (typeof max == 'function') next=max
         try {
             const client = new Rcon({
-                host: process.env[`SERVER_IP__${server.serverID}`],
+                host: process.env[`SERVER_IP_${server.serverID}`],
                 port: process.env[`SERVER_RCON_PORT_${server.serverID}`],
                 password: process.env[`SERVER_RCON_PWD_${server.serverID}`]
             })
