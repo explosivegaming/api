@@ -10,8 +10,8 @@ class ClientManager {
             try {
                 callback(
                     server,
-                    (err,data) => sendData(server.serverID,err,data),
-                    (status,msg) => closeClients(server.serverID,status,msg)
+                    (err,data) => this.sendData(server.serverID,err,data),
+                    (status,msg) => this.closeClients(server.serverID,status,msg)
                 )
             } catch (err) {
                 delete this.clients[server.serverID]
