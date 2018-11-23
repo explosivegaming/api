@@ -11,7 +11,7 @@ module.exports = {
         for (let player in rolesTable) {
             output.push(`["${player.toLowerCase()}"]={"${rolesTable[player].join('","')}"}`)
         }
-        return `/interface Sync.set_ranks{${output.join(',')}}`
+        return `/interface Sync.set_roles{${output.join(',')}}`
     },
     generateAssignCMD: (user,byUser,roles) => {
         let roleOutput

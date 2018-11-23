@@ -63,3 +63,8 @@ let sendCMD = (function () {
         }
     }
 })()
+
+// test functions
+sendCMD(config.servers[0],'<cooldude2606> ping')
+sendCMD(config.servers[0],Version.generateSetCMD(require(config.defaultRoleJson)))
+//sendCMD(config.servers[0],Version.generateAssignCMD('Sakama','Cooldude2606',["Donator", "Member", "Mod"]))
