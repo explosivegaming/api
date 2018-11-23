@@ -2,8 +2,10 @@
 const Router = require('express').Router
 const ClientManager = require('./ClientManager')
 const readLastLines = require('read-last-lines').read
+const consoleLog = require('../../lib/log')
 const config = require('../config.json')
 const fs = require('fs')
+
 class Log {
     constructor(name,mode,onData) {
         this.name = name
@@ -35,7 +37,7 @@ class Log {
                         res.status(200).json(lines.map(line => this.onData(line,server)))
                     }).catch(err => {
                         res.status(500)
-                        console.log(err)
+                        consoleLog('error','info',err)
                     })
                     break
                 case 'watch':
@@ -45,7 +47,7 @@ class Log {
                     })
                     break
                 default:
-                    console.log('Invalid Log Mode: '+this.mode)
+                    consoleLog('error','info','Invalid Log Mode: '+this.mode)
             }
         })
     }
@@ -66,7 +68,7 @@ class Log {
                     .on('error',err => closeClients(500,'Internal Server Error'))
                     break
                 default:
-                    console.log('Invalid Log Mode: '+this.mode)
+                    consoleLog('error','info','Invalid Log Mode: '+this.mode)
                     closeClients(500,'Internal Server Error')
             }
         })

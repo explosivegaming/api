@@ -1,4 +1,5 @@
 const config = require('../config.json')
+const consoleLog = require('../../lib/log')
 
 class ClientManager {
     constructor(callback) {
@@ -40,12 +41,14 @@ class ClientManager {
                 else if (ws.readyState == 1) ws.send(JSON.stringify(data))
                 else if (ws.readyState > 1) this.clientManager.removeClient(serverID,ws)
             })
+            consoleLog('success','info',`Send update from ${serverID} to ${clients.length} clients.`)
         }
     }
     closeClients(serverID,status,msg) {
         const clients = this.clients[serverID]
         if (clients) {
             clients.forEach(ws => ws.close(status,msg))
+            consoleLog('stop','info',`Closed ${clients.length} clients from ${serverID}.`)
         }
     }
 }
