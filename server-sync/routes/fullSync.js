@@ -16,6 +16,6 @@ module.exports = async function(req,res) {
     await bot.ready()
     const users = bot.getUserRoles('display',true)
     const version = semver.maxSatisfying(Object.keys(versions),rconDetails.version)
-    //sendCMD(rconDetails,versions[version].generateSetCMD(users))
+    sendCMD(rconDetails,versions[version].generateSetCMD(users))
     res.send(versions[version].generateSetCMD(users))
 }
