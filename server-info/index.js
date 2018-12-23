@@ -1,5 +1,5 @@
-const config = require('./config.json')
 const router = require('express').Router()
+const config = require('../config')
 
 function isAuthenticated(req,res,next) {
     if (req.query.key == process.env.API_KEY) return next()
@@ -16,6 +16,7 @@ router.param('serverID',(req,res,next,serverID) => {
         res.status(400).send('Invalid Server ID.')
     }
 })
+
 
 router.get('/:serverID',(req,res) => res.redirect(`${req.server.serverID}/info`))
 router.use('/:serverID/info',require('./routes/watch')('info'))

@@ -1,70 +1,56 @@
-const config = require('./config.json')
-const semver = require('semver')
-const consoleLog = require('../lib/log')
-const Rcon = require('simple-rcon')
-const syncVersion = semver.valid(semver.coerce(config.scenarioSyncVersion))
+const router = require('express').Router()
+const config = require('../config')
 
-let Version
-// The following should be accetped by each version, undefined functions are skiped
-// Version.cleanRoles(string) - return array of roles
-// Version.generateSetCMD(roles) - using cleaned array of roles to generate a string, overrides deafult in game
-// Version.generateAssignCMD(user,byUser,roles) - string to add the roles of a snginle player
-// Version.generateUnassignCMD(user,byUser,roles) - string to remove the roles of a snginle player
-if (!syncVersion || semver.satisfies(syncVersion,'<3.6.0')) {
-    consoleLog('error','sync','Unable to start server sync; sync version is too low')
-} else if (semver.satisfies(syncVersion,'3.6.x')) {
-    consoleLog('warning','sync','Starting server sync in compatibility mode for version 3.6.0')
-    Version = require('./src/3.6.0')
-} else if (semver.satisfies(syncVersion,'4.0.x')) {
-    Version = require('./src/4.0.0')
+function isAuthenticated(req,res,next) {
+    if (req.query.key == process.env.API_KEY) return next()
+    res.status(401).send('Missing or invalid api key.')
 }
 
-let sendCMD = (function () {
-    let count = 0
-    // retry sub-function - will resend command if there is an error upto the max given
-    function retry(server, cmd, max, timeout, next) {
-        if (count++ > max) {
-            consoleLog('error','sync','Failed to send command to: '+server.name)
-            return next(new Error('Max retries reached.'))
-        } else {
-            return setTimeout(function () {
-                sendCMD(server, cmd, max, timeout, next)
-            }, timeout)
+function generateRconDetails(req,res,next) {
+    if (req.server) {
+        const server = req.server
+        req.rcon = {
+            name: server.name,
+            host: process.env[`SERVER_IP_${server.serverID}`],
+            port: process.env[`SERVER_RCON_PORT_${server.serverID}`],
+            password: process.env[`SERVER_RCON_PWD_${server.serverID}`],
+            version: server.syncVersion
         }
-    }
-    // sendCMD function - sends the command to the server
-    return function (server, cmd, max=10, timeout=50, next=() => {}) {
-        if (typeof max == 'function') next=max
-        try {
-            const client = new Rcon({
-                host: process.env[`SERVER_IP_${server.serverID}`],
-                port: process.env[`SERVER_RCON_PORT_${server.serverID}`],
-                password: process.env[`SERVER_RCON_PWD_${server.serverID}`]
-            })
-            .exec(cmd, res => {
-                if (res.body.startsWith('Unknown command')) {
-                    retry(server, cmd, max, timeout, next)
-                } else {
-                    client.close()
-                    consoleLog('success','sync','Send command to: '+server.name)
-                    next(null, res)
-                }
-            })
-            .connect()
-            .on('error', err => {
-                if (err) {
-                    consoleLog('error','sync',err)
-                    retry(server, cmd, max, timeout, next)
-                }
-            })
-        } catch (err) {
-            consoleLog('error','sync',err)
-            retry(server, cmd, max, timeout, next)
+        next()
+    } else {
+        req.rcon = {
+            name: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            host: req.body.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            port: req.body.port || undefined,
+            password: req.body.password || undefined,
+            version: req.body.version || '3.6.0'
         }
+        if (!req.rcon.port || !req.rcon.password) res.status(400).send('Error: rcon port (ip) or passworrd (password) was not specifed')
+        else next()
     }
-})()
+}
+
+
+router.param('serverID',(req,res,next,serverID) => {
+    const servers = config.servers
+    const server = servers.find(server => server.serverID === serverID)
+    if (server) {
+        req.server = server
+        next()
+    } else {
+        res.status(400).send('Invalid Server ID.')
+    }
+})
+
+
+router.get('/roles',isAuthenticated,require('./routes/roles'))
+router.post('/fullSync',generateRconDetails,require('./routes/fullSync'))
+router.get('/:serverID/fullSync',isAuthenticated,generateRconDetails,require('./routes/fullSync'))
+
+module.exports = router
 
 // test functions
-sendCMD(config.servers[0],'<cooldude2606> ping')
-sendCMD(config.servers[0],Version.generateSetCMD(require(config.defaultRoleJson)))
-//sendCMD(config.servers[0],Version.generateAssignCMD('Sakama','Cooldude2606',["Donator", "Member", "Mod"]))
+//sendCMD(config.servers[0],'<cooldude2606> ping')
+//sendCMD(config.servers[0],'/interface game.print("PONG")')
+//sendCMD(config.servers[0],versions.generateSetCMD(require(config.defaultRoleJson)))
+//sendCMD(config.servers[0],versions.generateAssignCMD('Sakama','Cooldude2606',["Donator", "Member", "Mod"]))

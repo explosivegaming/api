@@ -1,0 +1,42 @@
+{
+    "discord": {
+        "numberOfGuilds": 3
+    },
+    "server-info": {
+        "maxReadLength": 50,
+        "info": "/server-info.json",
+        "bans": "/banlist.json",
+        "discordEmit": "/embeded.json",
+        "console": "/console.log",
+        "roles": "/role-change.json"
+    },
+    "servers": [
+        {
+            "serverID": "eu-01",
+            "name": "ExpGaming S1 - Public",
+            "description": "Welcome to one of our public reset servers; we aim to make large bases and expansive train network. Science production and rockets are the primary goal.",
+            "serverDir": "./test/factorio1",
+            "syncVersion": "3.6.0",
+            "autoSync": true,
+            "hasApi": false
+        }
+    ],
+    "roles": {
+        "👨‍💼Community-Managers": "Community Manager",
+        "👨‍💻Community-Developers": "Developer",
+        "⚙️Factorio-Team": "Developer",
+        "🕵Administrators": "Admin",
+        "👮🏻Moderators": "Mod",
+        "👨‍🏫Trainee Moderators": "Trainee",
+        "💎Board Member": "Sponsor",
+        "💍Sponsors": "Sponsor",
+        "💰P2W": "Pay to Win",
+        "💵Subscriber": "Pay to Win",
+        "🌟Donators": "Donator",
+        "🎥Content-Creator": "Partner",
+        "👪Server-Partners": "Partner",
+        "👑Founders": "Partner",
+        "⭐Veterans": "Veteran",
+        "👨‍🔧Members": "Member"
+    }
+}

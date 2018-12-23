@@ -7,7 +7,8 @@ module.exports = {
     generateSetCMD: rolesTable => {
         const output = []
         for (let player in rolesTable) {
-            output.push(`["${player.toLowerCase()}"]="${rolesTable[player]}"`)
+            const role = typeof rolesTable[player] == 'object' && rolesTable[player][0] || rolesTable[player]
+            output.push(`["${player.toLowerCase()}"]="${role}"`)
         }
         return `/interface Sync.set_ranks{${output.join(',')}}`
     }

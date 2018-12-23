@@ -1,16 +1,18 @@
 const Express = require('express')
 const enableWs = require('express-ws')
 const consoleLog = require('./lib/log')
+const bot = require('./lib/bot')
 require('dotenv').config()
 const App = Express()
 enableWs(App)
 
 const webModules = {
-    "serverInfo": "./server-info/index"
+    "serverInfo": "./server-info/index",
+    "serverSync": "./server-sync/index"
 }
 
 const modules = {
-    "serverSync": "./server-sync/index"
+    
 }
 
 consoleLog('status','init','Loading Web Modules...')
@@ -25,7 +27,10 @@ for (let module_name in modules) {
     require(modules[module_name])
 }
 
-consoleLog('start','init','Starting Web Server')
-App.listen(process.env.HOST_PORT,process.env.HOST_IP,() => {
-    consoleLog('info','init',` Listening on: ${process.env.HOST_IP}:${process.env.HOST_PORT}`)
+consoleLog('start','init','Starting Discord Bot')
+bot.ready().then(() => {
+    consoleLog('start','init','Starting Web Server')
+    App.listen(process.env.HOST_PORT,process.env.HOST_IP,() => {
+        consoleLog('info','init',` Listening on: ${process.env.HOST_IP}:${process.env.HOST_PORT}`)
+    })
 })

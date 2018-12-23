@@ -1,4 +1,4 @@
-const config = require('../config.json')
+const config = require('../../config.json')
 const consoleLog = require('../../lib/log')
 
 class ClientManager {

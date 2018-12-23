@@ -3,7 +3,7 @@ const Router = require('express').Router
 const ClientManager = require('./ClientManager')
 const readLastLines = require('read-last-lines').read
 const consoleLog = require('../../lib/log')
-const config = require('../config.json')
+const config = require('../../config.json')['server-info']
 const fs = require('fs')
 
 class Log {
@@ -29,7 +29,7 @@ class Log {
 
             switch (this.mode) {
                 case 'tail':
-                    readLastLines(server[this.name],limit).catch(err => {
+                    readLastLines(server.serverDir+config[this.name],limit).catch(err => {
                         res.status(404).send('Server missing file.')
                     }).then(lines => {
                         lines = lines.split('\n')
@@ -41,7 +41,7 @@ class Log {
                     })
                     break
                 case 'watch':
-                    fs.readFile(server[this.name],(err,data) => {
+                    fs.readFile(server.serverDir+config[this.name],(err,data) => {
                         if (err) res.status(404).send('Server missing file.')
                         else res.status(200).json(this.onData(data,server))
                     })
@@ -56,14 +56,14 @@ class Log {
         return new ClientManager((server,sendData,closeClients) => {
             switch (this.mode) {
                 case 'tail':
-                    this.tail = new Tail(server[this.name])
+                    this.tail = new Tail(server.serverDir+config[this.name])
                     tail.on('line',data => sendData(undefined,this.onData(data,server)))
                     tail.on('error',err => closeClients(500,'Internal Server Error'))
                     break
                 case 'watch':
-                    fs.watch(server[this.name])
+                    fs.watch(server.serverDir+config[this.name])
                     .on('change',() => {
-                        fs.readFile(server[this.name],(err,data) => sendData(err,this.onData(data,server)))
+                        fs.readFile(server.serverDir+config[this.name],(err,data) => sendData(err,this.onData(data,server)))
                     })
                     .on('error',err => closeClients(500,'Internal Server Error'))
                     break
