@@ -18,7 +18,7 @@ module.exports = {
         const rconDetails = req.rcon
         const version = semver.maxSatisfying(Object.keys(versions),rconDetails.version)
         const cmd = versions[version].generateDetails(req.server)
-        //sendCMD(rconDetails,cmd)
+        sendCMD(rconDetails,cmd)
         if (!req.cmd) req.cmd=''
         req.cmd+='details: '+cmd+'\n'
         next()

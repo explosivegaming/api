@@ -19,7 +19,7 @@ module.exports = {
         const users = bot.getUserRoles('display',true)
         const version = semver.maxSatisfying(Object.keys(versions),rconDetails.version)
         const cmd = versions[version].generateSetCMD(users)
-        //sendCMD(rconDetails,cmd)
+        sendCMD(rconDetails,cmd)
         if (!req.cmd) req.cmd=''
         req.cmd+='roles: '+cmd+'\n'
         next()
