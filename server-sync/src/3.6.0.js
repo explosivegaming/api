@@ -8,7 +8,7 @@ module.exports = {
             server_description='${server.description}',
             time='${timedate.format('HH:mm')}',
             date='${timedate.format('YYYY MM DD')}',
-            reset_time='${timedate.add(server.resetAfter,'days').format('YYYY MM DD HH:mm')}',
+            reset_time='${server.resetAfter == 0 ? 'Non Set' : timedate.add(server.resetAfter,'days').format('YYYY MM DD HH:mm')}',
             branch='master'
         }`
     },

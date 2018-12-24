@@ -16,7 +16,7 @@ function generateRconDetails(req,res,next) {
             password: process.env[`SERVER_RCON_PWD_${server.serverID}`],
             version: server.syncVersion
         }
-        next()
+        if (req.rcon.version != '0') next()
     } else {
         req.rcon = {
             name: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
@@ -26,7 +26,7 @@ function generateRconDetails(req,res,next) {
             version: req.body.version || '3.6.0'
         }
         if (!req.rcon.port || !req.rcon.password) res.status(400).send('Error: rcon port (ip) or passworrd (password) was not specifed')
-        else next()
+        else if (req.rcon.version != '0') next()
     }
 }
 
