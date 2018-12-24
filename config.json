@@ -16,6 +16,7 @@
             "name": "ExpGaming S1 - Public",
             "description": "Welcome to one of our public reset servers; we aim to make large bases and expansive train network. Science production and rockets are the primary goal.",
             "serverDir": "./test/factorio1",
+            "resetAfter": "2",
             "syncVersion": "3.6.0",
             "autoSync": true,
             "hasApi": false

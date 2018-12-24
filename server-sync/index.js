@@ -30,6 +30,10 @@ function generateRconDetails(req,res,next) {
     }
 }
 
+function finalise(req,res) {
+    console.log(req.cmd)
+    res.send(req.cmd)
+}
 
 router.param('serverID',(req,res,next,serverID) => {
     const servers = config.servers
@@ -42,10 +46,20 @@ router.param('serverID',(req,res,next,serverID) => {
     }
 })
 
+const routes = {
+    roles: require('./routes/roles'),
+    details: require('./routes/details')
+}
 
-router.get('/roles',isAuthenticated,require('./routes/roles'))
-router.post('/fullSync',generateRconDetails,require('./routes/fullSync'))
-router.get('/:serverID/fullSync',isAuthenticated,generateRconDetails,require('./routes/fullSync'))
+router.get('/roles',isAuthenticated,routes.roles.get)
+router.get('/details',isAuthenticated,routes.details.get)
+router.post('/roles',generateRconDetails,routes.roles.post,finalise)
+router.post('/details',generateRconDetails,routes.details.post,finalise)
+router.post('/all',generateRconDetails,routes.roles.post,routes.details.post,finalise)
+// these get requests act as predefined posts
+router.get('/:serverID/roles',isAuthenticated,generateRconDetails,routes.roles.post,finalise)
+router.get('/:serverID/details',isAuthenticated,generateRconDetails,routes.details.post,finalise)
+router.get('/:serverID/all',isAuthenticated,generateRconDetails,routes.roles.post,routes.details.post,finalise)
 
 module.exports = router
 

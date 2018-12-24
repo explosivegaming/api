@@ -1,4 +1,17 @@
+const moment = require('moment')
+
 module.exports = {
+    generateDetails: server => {
+        const timedate = moment()
+        return `/interface Sync.info{
+            server_name='${server.name}',
+            server_description='${server.description}',
+            time='${timedate.format('HH:mm')}',
+            date='${timedate.format('YYYY MM DD')}',
+            reset_time='${timedate.add(server.resetAfter,'days').format('YYYY MM DD HH:mm')}',
+            branch='master'
+        }`
+    },
     cleanRoles: roleString => {
         let json = JSON.parse(roleString)
         for (let player in json) json[player] = json[player][0]
