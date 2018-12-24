@@ -26,7 +26,10 @@ function generateRconDetails(req,res,next) {
             version: req.body.version || '3.6.0'
         }
         if (!req.rcon.port || !req.rcon.password) res.status(400).send('Error: rcon port (ip) or passworrd (password) was not specifed')
-        else if (req.rcon.version != '0') next()
+        else {
+            if (req.rcon.version != '0') next()
+            else res.send(403).send('Server does not have valid sync version')
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 const consoleLog = require('../../lib/log')
 const Rcon = require('simple-rcon')
 
-module.exports = (function () {
+const sendCMD = (function () {
     let count = 0
     // retry sub-function - will resend command if there is an error upto the max given
     function retry(rconDetails, cmd, max, timeout, next) {
@@ -46,3 +46,5 @@ module.exports = (function () {
         return cmd
     }
 })()
+
+module.exports = sendCMD
