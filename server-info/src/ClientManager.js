@@ -5,7 +5,7 @@ class ClientManager {
     constructor(callback) {
         this.clients = {}
         this.serverIDs = {}
-        config.servers.forEach((server,index) => {
+        config.servers.filter(server => server.localMachine && server.hasApi).forEach((server,index) => {
             this.serverIDs[server.serverID] = index
             this.clients[server.serverID] = []
             try {

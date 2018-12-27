@@ -1,10 +1,7 @@
 const router = require('express').Router()
-const config = require('../config')
+const {isAuthenticated,serverID} = require('../lib/commonRoutes')
 
-function isAuthenticated(req,res,next) {
-    if (req.query.key == process.env.API_KEY) return next()
-    res.status(401).send('Missing or invalid api key.')
-}
+router.param('serverID',serverID)
 
 function generateRconDetails(req,res,next) {
     if (req.server) {
@@ -17,10 +14,11 @@ function generateRconDetails(req,res,next) {
             version: server.syncVersion
         }
         if (req.rcon.version != '0') next()
+        else res.status(403).send('Server does not have valid sync version')
     } else {
         req.rcon = {
-            name: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-            host: req.body.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            name: req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip,
+            host: req.body.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip,
             port: req.body.port || undefined,
             password: req.body.password || undefined,
             version: req.body.version || '3.6.0'
@@ -28,26 +26,14 @@ function generateRconDetails(req,res,next) {
         if (!req.rcon.port || !req.rcon.password) res.status(400).send('Error: rcon port (ip) or passworrd (password) was not specifed')
         else {
             if (req.rcon.version != '0') next()
-            else res.send(403).send('Server does not have valid sync version')
+            else res.status(403).send('Server does not have valid sync version')
         }
     }
 }
 
 function finalise(req,res) {
-    console.log(req.cmd)
     res.send(req.cmd)
 }
-
-router.param('serverID',(req,res,next,serverID) => {
-    const servers = config.servers
-    const server = servers.find(server => server.serverID === serverID)
-    if (server) {
-        req.server = server
-        next()
-    } else {
-        res.status(400).send('Invalid Server ID.')
-    }
-})
 
 const routes = {
     roles: require('./routes/roles'),

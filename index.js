@@ -3,8 +3,16 @@ const enableWs = require('express-ws')
 const consoleLog = require('./lib/log')
 const bot = require('./lib/bot')
 require('dotenv').config()
+const config = require('./config')
 const App = Express()
 enableWs(App)
+
+config.servers.filter(server => server.localMachine).forEach(server => {
+    const env = process.env
+    env[`SERVER_IP_${server.serverID}`]=env.HOST_IP
+    env[`SERVER_API_URL_${server.serverID}`]=`http://${env.HOST_IP}:${env.HOST_PORT}`
+    env[`SERVER_API_KEY_${server.serverID}`]=env.API_KEY
+})
 
 const webModules = {
     "serverInfo": "./server-info/index",
