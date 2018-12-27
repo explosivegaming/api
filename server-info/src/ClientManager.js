@@ -41,7 +41,7 @@ class ClientManager {
                 else if (ws.readyState == 1) ws.send(JSON.stringify(data))
                 else if (ws.readyState > 1) this.clientManager.removeClient(serverID,ws)
             })
-            consoleLog('success','info',`Send update from ${serverID} to ${clients.length} clients.`)
+            consoleLog('info','info',`Send update from ${serverID} to ${clients.length} clients.`)
         }
     }
     closeClients(serverID,status,msg) {
