@@ -12,6 +12,7 @@ module.exports = {
         const users = bot.getUserRoles('display')
         const factorio = bot.getUserRoles('display',true)
         res.json({roles:roles,users:users,factorio:factorio})
+        consoleLog('info','sync',`Sent roles to {ip}`,req)
     },
     post: async function(req,res,next) {
         const rconDetails = req.rcon

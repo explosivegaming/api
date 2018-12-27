@@ -13,6 +13,7 @@ module.exports = {
             servers[server.serverID] = server
         })
         res.json(servers)
+        consoleLog('info','sync',`Sent details to {ip}`,req)
     },
     post: async function(req,res,next) {
         const rconDetails = req.rcon

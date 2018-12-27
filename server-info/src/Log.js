@@ -35,6 +35,7 @@ class Log {
                         lines = lines.split('\n')
                         lines.pop()
                         res.status(200).json(lines.map(line => this.onData(line,server)))
+                        consoleLog('info','info',`Sent ${this.name} for ${server.serverID} to {ip}`,req)
                     }).catch(err => {
                         res.status(500)
                         consoleLog('error','info',err)
@@ -43,7 +44,10 @@ class Log {
                 case 'watch':
                     fs.readFile(server.serverDir+config[this.name],(err,data) => {
                         if (err) res.status(404).send('Server missing file.')
-                        else res.status(200).json(this.onData(data,server))
+                        else {
+                            res.status(200).json(this.onData(data,server))
+                            consoleLog('info','info',`Sent ${this.name} for ${server.serverID} to {ip}`,req)
+                        }
                     })
                     break
                 default:
