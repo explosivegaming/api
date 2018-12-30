@@ -1,3 +1,4 @@
+const consoleLog = require('../../lib/log')
 const sendCMD = require('../src/sendCMD')
 const bot = require('../../lib/bot')
 const semver = require('semver')
@@ -22,6 +23,7 @@ module.exports = {
         sendCMD(rconDetails,cmd)
         if (!req.cmd) req.cmd=''
         req.cmd+='roles: '+cmd+'\n'
+        consoleLog('info','sync',`Sent roles to ${req.server.name}`)
         next()
     }
 }

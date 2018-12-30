@@ -1,5 +1,6 @@
 const sendCMD = require('../src/sendCMD')
 const semver = require('semver')
+const consoleLog = require('../../lib/log')
 const config = require('../../config')
 
 const versions = {}
@@ -22,6 +23,7 @@ module.exports = {
         sendCMD(rconDetails,cmd)
         if (!req.cmd) req.cmd=''
         req.cmd+='details: '+cmd+'\n'
+        consoleLog('info','sync',`Sent details to ${req.server.name}`)
         next()
     }
 }

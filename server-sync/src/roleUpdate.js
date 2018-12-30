@@ -2,6 +2,7 @@ const sendCMD = require('../src/sendCMD')
 const bot = require('../../lib/bot')
 const servers = require('../../config').servers.filter(server => server.autoSync)
 const semver = require('semver')
+const consoleLog = require('../../lib/log')
 
 const versions = {}
 versions['3.6.0'] = require('./3.6.0')
@@ -21,6 +22,7 @@ bot.client.on('guildMemberUpdate',async (oldMember,newMember) => {
     const addedRolesNames = bot.convertRolesToFactorioRoles(addedRoles)
     const removedRolesNames = bot.convertRolesToFactorioRoles(removedRoles)
     // sends update to all server with auto sync enabled
+    let msg = ''
     servers.forEach(server => {
         const rconDetails = {
             name: server.name,
@@ -33,10 +35,13 @@ bot.client.on('guildMemberUpdate',async (oldMember,newMember) => {
         if (versions[version].generateAssignCMD && addedRolesNames.length > 0) {
             const cmdAdd = versions[version].generateAssignCMD(username,byUsername,addedRolesNames)
             sendCMD(rconDetails,cmdAdd)
+            msg+=' Added: '+addedRolesNames.join(',')
         }
         if (versions[version].generateUnassignCMD && removedRolesNames.length > 0) {
             const cmdRemove = versions[version].generateUnassignCMD(username,byUsername,removedRolesNames)
             sendCMD(rconDetails,cmdRemove)
+            msg+=' Removed: '+removedRolesNames.join(',')
         }
     })
+    consoleLog('info','sync',`<${byUsername}> updated roles for <${username}>${msg}`)
 })
