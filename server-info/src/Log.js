@@ -57,7 +57,7 @@ class Log {
     }
 
     createClientManager() {
-        return new ClientManager((server,sendData,closeClients) => {
+        return new ClientManager(this.name,(server,sendData,closeClients) => {
             switch (this.mode) {
                 case 'tail':
                     this.tail = new Tail(server.serverDir+config[this.name])

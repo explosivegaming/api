@@ -2,7 +2,7 @@ const config = require('../../config.json')
 const consoleLog = require('../../lib/log')
 
 class ClientManager {
-    constructor(callback) {
+    constructor(name,callback) {
         this.clients = {}
         this.serverIDs = {}
         config.servers.filter(server => server.localMachine && server.hasApi).forEach((server,index) => {
@@ -41,7 +41,7 @@ class ClientManager {
                 else if (ws.readyState == 1) ws.send(JSON.stringify(data))
                 else if (ws.readyState > 1) this.clientManager.removeClient(serverID,ws)
             })
-            consoleLog('info','info',`Send update from ${serverID} to ${clients.length} clients.`)
+            consoleLog('info','info',`Send update for ${this.name} from ${serverID} to ${clients.length} clients.`)
         }
     }
     closeClients(serverID,status,msg) {
