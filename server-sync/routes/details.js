@@ -15,7 +15,7 @@ module.exports = {
         res.json(servers)
         consoleLog('info','sync',`Sent details to {ip}`,req)
     },
-    post: async function(req,res,next) {
+    post: function(req,res,next) {
         const rconDetails = req.rcon
         const version = semver.maxSatisfying(Object.keys(versions),rconDetails.version)
         const cmd = versions[version].generateDetails(req.server)

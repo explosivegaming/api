@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {isAuthenticated,serverID} = require('../lib/commonRoutes')
+require('./src/roleUpdate')
 
 router.param('serverID',serverID)
 

@@ -14,9 +14,8 @@ module.exports = {
         res.json({roles:roles,users:users,factorio:factorio})
         consoleLog('info','sync',`Sent roles to {ip}`,req)
     },
-    post: async function(req,res,next) {
+    post: function(req,res,next) {
         const rconDetails = req.rcon
-        await bot.ready()
         const users = bot.getUserRoles('display',true)
         const version = semver.maxSatisfying(Object.keys(versions),rconDetails.version)
         const cmd = versions[version].generateSetCMD(users)
