@@ -22,4 +22,4 @@
     <img src="https://discordapp.com/api/guilds/260843215836545025/widget.png?style=shield" alt="Discord">
   </a>
 </p>
-<h2 align="center">ExpGaming Backend Repository</h2>
+<h2 align="center">ExpGaming Api Repository</h2>
