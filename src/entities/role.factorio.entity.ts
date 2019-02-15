@@ -39,7 +39,7 @@ export class FactorioRoleRepository extends Repository<FactorioRole> {
 
     public async getUsers(roleName: string) {
         const role = await this.findOne({ name:roleName},{ relations: ['accounts'] })
-        return await Promise.all(role.accounts.map(factorioAccount => this.factorioRepo.getByName(factorioAccount.name)))
+        return Promise.all(role.accounts.map(factorioAccount => this.factorioRepo.getByName(factorioAccount.name)))
     }
 
     public async getByName(roleName: string) {
@@ -61,7 +61,7 @@ export class FactorioRoleRepository extends Repository<FactorioRole> {
         }
         cleanLog('info',`Link factorioRole<${roleName}> to discordRole<${discordRoleId}>`)
         role.discordRoles.push(discordRoleId)
-        return await this.save(role)
+        return this.save(role)
     }
 
     public async unlinkFromDiscord(roleName: string, discordRoleId: string) {
@@ -72,7 +72,7 @@ export class FactorioRoleRepository extends Repository<FactorioRole> {
             cleanLog('info',`Unlinked factorioRole<${roleName}> from discordRole<${discordRoleId}>`)
             role.discordRoles.splice(index,1)
             if (role.discordRoles.length > 0) {
-                return await this.save(role)
+                return this.save(role)
             } else {
                 await this.delete(role.id)
                 return 'Removed role: '+role.name

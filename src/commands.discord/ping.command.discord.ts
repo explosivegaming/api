@@ -19,4 +19,4 @@ discordBot.on('command/ping',async (command: DiscordBotCommand) => {
     `);
 
     pingMsg.delete(10000)
-}) 
+})

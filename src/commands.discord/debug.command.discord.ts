@@ -9,4 +9,4 @@ discordBot.on('command/ping',async (command: DiscordBotCommand) => {
     cleanLog('debug','Received debug from: '+command.member.displayName)
     command.message.delete()
     //discordBot.client.guilds.get('260843215836545025').members.get('216303189073461248').addRoles(['525738033665015820'])
-}) 
+})

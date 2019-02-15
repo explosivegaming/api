@@ -171,7 +171,7 @@ export class AccountRepository extends Repository<Account> {
             account[accountType] = subAccount
             account.permissions = 0
             await this.insert(account)
-            return await this.findOne(conditions,settings)
+            return this.findOne(conditions,settings)
         }
     }
 

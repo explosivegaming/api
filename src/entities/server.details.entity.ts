@@ -50,7 +50,7 @@ export class ServerDetailsRepository extends Repository<ServerDetail> {
         if (details) {
             return details
         } else {
-            return await this.getByUid(id)
+            return this.getByUid(id)
         }
     }
 
@@ -60,7 +60,7 @@ export class ServerDetailsRepository extends Repository<ServerDetail> {
             const now = moment()
             return now.add(moment.duration(details.resetDelay))
         } else {
-            throw new HttpError(404,`Could not find server: ${serverId}`) 
+            throw new HttpError(404,`Could not find server: ${serverId}`)
         }
     }
 

@@ -21,7 +21,7 @@ export interface DiscordBotCommandHelp {
     name: string,
     params: string,
     usage: string,
-    restriction?: string 
+    restriction?: string
 }
 
 @Service()
@@ -169,7 +169,7 @@ export class DiscordService extends EventEmitter {
                 restriction: restriction
             })
         } else {
-            this.botCommands.push(command) 
+            this.botCommands.push(command)
         }
     }
 

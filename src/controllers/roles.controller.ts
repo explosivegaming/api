@@ -54,7 +54,7 @@ export class ServerController {
     }
 
     @Get('/discord')
-    @Authorized(1 | ApiPermission.ReadRoles) 
+    @Authorized(1 | ApiPermission.ReadRoles)
     discord(@QueryParam('userAs') userKey: string,@QueryParam('roleAs') roleKey: string,@QueryParam('keyByUser') invert: boolean,@QueryParam('asFactorio') asFactorio: boolean) {
         if (asFactorio) {
             const userRoles = this.discordService.getDiscordRoleSync(userKey)
