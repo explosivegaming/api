@@ -11,7 +11,7 @@ export class DiscordAccount {
     
     constructor(id: string,name: string) {
         this.id = id
-        this.name = name 
+        this.name = name
     }
 
     @PrimaryColumn()

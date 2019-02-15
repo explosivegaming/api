@@ -28,7 +28,7 @@ export class SyncController {
     private discordService: DiscordService
     
     @Post('/details')
-    @Authorized(4 | ApiPermission.ExecServers) 
+    @Authorized(4 | ApiPermission.ExecServers)
     async details(@BodyParam('rcon') rconDetails: rconDetails, @BodyParam('serverId') serverId: string) {
         const serverDetails = await this.serverRepo.getByServerId(serverId)
         if (!serverDetails) {
@@ -47,7 +47,7 @@ export class SyncController {
     }
 
     @Post('/roles')
-    @Authorized(4 | ApiPermission.ExecServers) 
+    @Authorized(4 | ApiPermission.ExecServers)
     async roles(@BodyParam('rcon') rconDetails: rconDetails) {
         cleanLog('info',`Sending roles command to: ${rconDetails.host}:${rconDetails.port}`)
         const output = []
