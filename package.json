@@ -1,7 +1,7 @@
 {
    "name": "expgaming-api",
    "version": "1.0.0",
-   "description": "Discord bot to add user profiles",
+   "description": "Server api for explosive gaming",
    "main": "./dist/index.js",
    "scripts": {
       "start": "ts-node src/index.ts",
@@ -21,10 +21,14 @@
       "express-session": "^1.15.6",
       "ioredis": "^4.6.2",
       "moment": "^2.23.0",
+      "oneline": "^1.0.0",
+      "rcon-ts": "^1.2.3",
       "reflect-metadata": "^0.1.10",
       "request-promise": "^4.2.2",
       "routing-controllers": "^0.7.7",
       "simple-rcon": "^0.3.1",
+      "socket.io": "^2.2.0",
+      "socket.io-client": "^2.2.0",
       "sqlite3": "^4.0.6",
       "typedi": "^0.8.0",
       "typeorm": "0.2.11",
@@ -41,6 +45,8 @@
       "@types/moment": "^2.13.0",
       "@types/node": "^8.0.29",
       "@types/request-promise": "^4.1.42",
+      "@types/socket.io": "^2.1.2",
+      "@types/socket.io-client": "^1.4.32",
       "ts-node": "3.3.0",
       "typescript": "^3.3.1"
    }

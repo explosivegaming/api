@@ -12,6 +12,8 @@ import { ApiPermission } from '../entities/key.entity';
 import { cleanLog, errorLog } from '../lib/log';
 import { DiscordService } from './discord.service';
 import { RedisService } from './redis.service';
+import { SocketIOService } from './socketio.service';
+import { getCustomRepository } from 'typeorm';
 
 const RedisStore = connect_redis(express_session)
 
@@ -22,8 +24,15 @@ export class WebServerService {
     private discordService: DiscordService
     @Inject(type => RedisService)
     private redisService: RedisService
+    @Inject(type => SocketIOService)
+    private socketService: SocketIOService
 
-    @InjectRepository()
+    constructor() {
+        // because @InjectRepository does not want to work
+        this.userRepository = getCustomRepository(AccountRepository)
+    }
+
+    //@InjectRepository()
     private userRepository: AccountRepository
 
     server: http.Server
@@ -86,7 +95,8 @@ export class WebServerService {
         this.initMiddleware()
         this.initControllers()
         this.discordService.init()
-        const port = process.env.PORT
+        this.socketService.init()
+        const port = process.env.API_PORT
         return this.server.listen(port, err => {
             if (err) errorLog(err)
             cleanLog('start','Started Web Server on port '+port)
