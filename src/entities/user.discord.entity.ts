@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
 import Container, { Service } from 'typedi';
 import { Column, Entity, EntityRepository, OneToMany, OneToOne, PrimaryColumn, Repository } from 'typeorm';
-import { cleanLog, errorLog } from '../lib/log';
+import { debugLog, errorLog } from '../lib/log';
 import { DiscordService } from '../services/discord.service';
 import { Account, AccountRelations } from './user.entity';
 import { DiscordUserVote } from './vote.discord.entity';
@@ -42,7 +42,7 @@ export class DiscordAccountRepository extends Repository<DiscordAccount> {
             if (found) {
                 return found
             } else {
-                cleanLog('debug',`Created new <discord> account`)
+                debugLog(`Created new <discord> account`)
                 const name = username || user.username
                 const discordUser = new DiscordAccount(user.id,name)
                 await this.insert(discordUser)

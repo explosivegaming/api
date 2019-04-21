@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Column, Entity, EntityRepository, PrimaryGeneratedColumn, Repository, ManyToMany, getCustomRepository } from 'typeorm';
-import { cleanLog } from '../lib/log';
+import { log, debugLog } from '../lib/log';
 import { FactorioAccount, FactorioAccountRepository } from './user.factorio.entity';
 import { HttpError } from 'routing-controllers';
 
@@ -53,13 +53,13 @@ export class FactorioRoleRepository extends Repository<FactorioRole> {
     public async linkToDiscord(roleName: string, discordRoleId: string) {
         let role = await this.getByName(roleName)
         if (!role) {
-            cleanLog('debug',`Created new <factorio> role`)
+            debugLog(`Created new <factorio> role`)
             role = new FactorioRole(roleName)
         }
         if (role.discordRoles.indexOf(discordRoleId) >= 0) {
             return new HttpError(400,`Discord role <${discordRoleId}> is already linked to this role`)
         }
-        cleanLog('info',`Link factorioRole<${roleName}> to discordRole<${discordRoleId}>`)
+        log('info',`Link factorioRole<${roleName}> to discordRole<${discordRoleId}>`)
         role.discordRoles.push(discordRoleId)
         return this.save(role)
     }
@@ -69,7 +69,7 @@ export class FactorioRoleRepository extends Repository<FactorioRole> {
         if (role) {
             const index = role.discordRoles.indexOf(discordRoleId)
             if (!index) return new HttpError(400,`Discord role <${discordRoleId}> if not linked to this role`)
-            cleanLog('info',`Unlinked factorioRole<${roleName}> from discordRole<${discordRoleId}>`)
+            log('info',`Unlinked factorioRole<${roleName}> from discordRole<${discordRoleId}>`)
             role.discordRoles.splice(index,1)
             if (role.discordRoles.length > 0) {
                 return this.save(role)

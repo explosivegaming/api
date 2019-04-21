@@ -4,7 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { AccountRelations, AccountRepository, AccountRepositoryRelations, AccountType } from '../entities/user.entity';
 import { ApiPermission } from '../entities/key.entity';
-import { cleanLog } from '../lib/log';
+import { log } from '../lib/log';
 
 @Service()
 @JsonController('/users')
@@ -22,10 +22,10 @@ export class UserController {
     @Authorized(1 | ApiPermission.ReadUsers)
     users(@QueryParam('user') userId: string) {
         if (userId) {
-            cleanLog('debug',`Sent one user: <${userId}>`)
+            debugLog(`Sent one user: <${userId}>`)
             return this.userRepo.findOne(userId, { relations: AccountRepositoryRelations })
         } else {
-            cleanLog('debug','Sent all users')
+            debugLog('Sent all users')
             return this.userRepo.find({ relations: AccountRepositoryRelations })
         }
     }
@@ -33,14 +33,14 @@ export class UserController {
     @Get('/factorio')
     @Authorized(1 | ApiPermission.ReadUsers)
     allFactorio() {
-        cleanLog('debug','Sent all <factorio> users')
+        debugLog('Sent all <factorio> users')
         return this.userRepo.factorioUsers.find({ relations: AccountRelations })
     }
 
     @Get('/factorio/:name')
     @Authorized(1 | ApiPermission.ReadUsers)
     oneFactorio(@Param('name') name: string) {
-        cleanLog('debug',`Sent one user: factorio<${name}>`)
+        debugLog(`Sent one user: factorio<${name}>`)
         const lowerName = name.toLowerCase()
         return this.userRepo.factorioUsers.findOne({ name: lowerName }, { relations: AccountRelations })
     }
@@ -48,14 +48,14 @@ export class UserController {
     @Get('/discord')
     @Authorized(1 | ApiPermission.ReadUsers)
     allDiscord() {
-        cleanLog('debug','Sent all <discord> users')
+        debugLog('Sent all <discord> users')
         return this.userRepo.discordUsers.find({ relations: AccountRelations })
     }
 
     @Get('/discord/:id')
     @Authorized(1 | ApiPermission.ReadUsers)
     oneDiscord(@Param('id') id: string) {
-        cleanLog('debug',`Sent one user: discord<${id}>`)
+        debugLog(`Sent one user: discord<${id}>`)
         return this.userRepo.discordUsers.findOne(id, { relations: AccountRelations })
     }
 

@@ -9,7 +9,7 @@ import { Inject, Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { AccountRepository, AccountRepositoryRelations } from '../entities/user.entity';
 import { ApiPermission } from '../entities/key.entity';
-import { cleanLog, errorLog } from '../lib/log';
+import { log, errorLog } from '../lib/log';
 import { DiscordService } from './discord.service';
 import { RedisService } from './redis.service';
 import { SocketIOService } from './socketio.service';
@@ -42,7 +42,7 @@ export class WebServerService {
     private init() {
         this.app = express()
         this.server = http.createServer(this.app)
-        cleanLog('status','Initialized <app.webserver.service>')
+        log('status','Initialized <app.webserver.service>')
     }
 
     private initMiddleware() {
@@ -60,7 +60,7 @@ export class WebServerService {
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
         this.app.use(express.static(path.join(__dirname, '../../public')));
-        cleanLog('status','Initialized <middleware.webserver.service>')
+        log('status','Initialized <middleware.webserver.service>')
     }
 
     private initControllers() {
@@ -87,7 +87,7 @@ export class WebServerService {
             development: process.env.NODE_ENV === 'development',
             controllers: [__dirname + '/../controllers/*.controller{.js,.ts}']
         })
-        cleanLog('status','Initialized <controllers.webserver.service>')
+        log('status','Initialized <controllers.webserver.service>')
     }
 
     start() {
@@ -99,7 +99,7 @@ export class WebServerService {
         const port = process.env.API_PORT
         return this.server.listen(port, err => {
             if (err) errorLog(err)
-            cleanLog('start','Started Web Server on port '+port)
+            log('start','Started Web Server on port '+port)
         })
     }
 }

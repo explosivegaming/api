@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Column, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn, Repository } from 'typeorm';
-import { cleanLog } from '../lib/log';
+import { debugLog } from '../lib/log';
 import { Account } from './user.entity';
 import { HttpError } from 'routing-controllers';
 
@@ -59,7 +59,7 @@ export class KeyRepository extends Repository<UserKey> {
         }
         const accountPermissions = permissionsToBitmask(account.permissions)
         if (permissions == 0 || (permissions | accountPermissions) == accountPermissions) {
-            cleanLog('debug','Generated new key')
+            debugLog('Generated new key')
             const newKey = new UserKey()
             newKey.permissions = permissions
             newKey.account = account

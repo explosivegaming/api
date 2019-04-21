@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import { JsonController, Get, Authorized, Delete, Post, Body, Put, Param, QueryParam } from "routing-controllers";
 import { getCustomRepository } from "typeorm";
 import { ApiPermission } from "../entities/key.entity";
-import { cleanLog } from "../lib/log";
+import { log } from "../lib/log";
 import { FactorioRoleRepository } from "../entities/role.factorio.entity";
 import { DiscordService } from "../services/discord.service";
 
@@ -25,10 +25,10 @@ export class ServerController {
     @Authorized(1 | ApiPermission.ReadRoles)
     roles(@QueryParam('role') roleName: string) {
         if (roleName) {
-            cleanLog('debug',`Send one role: <${roleName}>`)
+            debugLog(`Send one role: <${roleName}>`)
             return this.rolesRepo.getByName(roleName)
         } else {
-            cleanLog('debug','Send all roles')
+            debugLog('Send all roles')
             return this.rolesRepo.find()
         }
     }
@@ -37,7 +37,7 @@ export class ServerController {
     @Authorized(2 | ApiPermission.WriteRoles)
     async delete(@Param('roleName') roleName: string) {
         await this.rolesRepo.delete({ name: roleName })
-        cleanLog('debug',`Removed role: ${roleName}`)
+        debugLog(`Removed role: ${roleName}`)
         return `Removed role: ${roleName}`
     }
 

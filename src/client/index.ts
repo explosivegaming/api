@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import { EventEmitter } from 'events';
-import { cleanLog, errorLog } from '../lib/log';
+import { log, errorLog } from '../lib/log';
 import { Rcon } from 'rcon-ts'
 import * as socketio from 'socket.io-client';
 import { ServerDetail } from '../entities/server.details.entity';
@@ -19,7 +19,7 @@ class RconClient extends Rcon {
         })
         this.connect()
         .then(() => {
-            cleanLog('Success',`Rcon connection created with: ${this.host}:${this.port}`)
+            log('Success',`Rcon connection created with: ${this.host}:${this.port}`)
         },errorLog)
     }
 
@@ -39,11 +39,11 @@ class SocketClient extends EventEmitter {
 
     init() {
         this.socket.on('connect',() => {
-            cleanLog('success',`Socket connection created with: ${process.env.SOCKET_HOST}`)
+            log('success',`Socket connection created with: ${process.env.SOCKET_HOST}`)
         })
         
         this.socket.on('disconnect',reason => {
-            cleanLog('warning',`Socket connection lost with: ${process.env.SOCKET_HOST} Reason: ${reason}`)
+            log('warning',`Socket connection lost with: ${process.env.SOCKET_HOST} Reason: ${reason}`)
         })
 
         this.socket.on('error',error => {
@@ -69,10 +69,10 @@ class Client {
 
     init() {
         this.socketClient.init()
-        this.rconClient.send('Server Rcon Connection Restored').then(msg => cleanLog('debug','Rcon Connection Test Passed'))
+        this.rconClient.send('Server Rcon Connection Restored').then(msg => debugLog('Rcon Connection Test Passed'))
 
         this.socketClient.on('sync',action => {
-            cleanLog('info',`Received sync: ${action.area}`)
+            log('info',`Received sync: ${action.area}`)
             switch(action.area) {
                 case 'details': {
                     this.syncDetails()
@@ -84,29 +84,29 @@ class Client {
         })
 
         this.socketClient.on('rawCmd',action => {
-            cleanLog('info',`Received command: ${action.cmd}`)
+            log('info',`Received command: ${action.cmd}`)
             this.rconClient.send(action.cmd)
         })
 
         this.socketClient.on('assign',action => {
-            cleanLog('info',`Received assign: ${action.user} ${action.roles}`)
+            log('info',`Received assign: ${action.user} ${action.roles}`)
             let roleOutput = `{"${action.roles.join('","')}"}`
             this.rconClient.send(`/interface Sync.assign_role("${action.user}",${roleOutput},${action.byUser ? action.byUser : 'nil'})`)
         })
 
         this.socketClient.on('unassign',action => {
-            cleanLog('info',`Received unassign: ${action.user} ${action.roles}`)
+            log('info',`Received unassign: ${action.user} ${action.roles}`)
             let roleOutput = `{"${action.roles.join('","')}"}`
             this.rconClient.send(`/interface Sync.unassign_role("${action.user}",${roleOutput},${action.byUser ? action.byUser : 'nil'})`)
         })
 
         this.socketClient.on('ban',action => {
-            cleanLog('info',`Received ban: ${action.user} ${action.reason}`)
+            log('info',`Received ban: ${action.user} ${action.reason}`)
             this.rconClient.send(`/ban ${action.user} ${action.reason}`)
         })
 
         this.socketClient.on('unban',action => {
-            cleanLog('info',`Received unban: ${action.user}`)
+            log('info',`Received unban: ${action.user}`)
             this.rconClient.send(`/unban ${action.user}`)
         })
 
@@ -114,7 +114,7 @@ class Client {
 
     syncDetails() {
         this.socketClient.socket.emit('details',(server: ServerDetail,time: string,date: string,reset: string) => {
-            cleanLog('info',`Received data for sync`)
+            log('info',`Received data for sync`)
             this.rconClient.send(oneline`/interface Sync.info{
                 server_name='${server.name}',
                 server_description='${server.description}',
@@ -128,7 +128,7 @@ class Client {
 
     syncRoles() {
         this.socketClient.socket.emit('roles',(roles: Array<string>) => {
-            cleanLog('info',`Received data for sync`)
+            log('info',`Received data for sync`)
             this.rconClient.send(`/interface Sync.set_roles{${roles.join(',')}}`)
         })
     }

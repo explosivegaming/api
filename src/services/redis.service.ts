@@ -1,6 +1,6 @@
 import * as Redis from 'ioredis';
 import { Service } from 'typedi';
-import { cleanLog } from '../lib/log';
+import { log } from '../lib/log';
 
 @Service()
 export class RedisService {
@@ -11,7 +11,7 @@ export class RedisService {
             host: process.env.REDIS_HOST || 'localhost',
             port: Number(process.env.REDIS_PORT) || 6379
         });
-        cleanLog('status','Initialized <redis.service>')
+        log('status','Initialized <redis.service>')
     }
 
 }

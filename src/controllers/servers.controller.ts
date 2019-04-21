@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { JsonController, Get, Authorized, Delete, Post, Body, Put, Param } from "routing-controllers";
 import { getCustomRepository } from "typeorm";
 import { ApiPermission } from "../entities/key.entity";
-import { cleanLog } from "../lib/log";
+import { log } from "../lib/log";
 
 @Service()
 @JsonController('/servers')
@@ -28,7 +28,7 @@ export class ServerController {
     async addServer(@Body() serverDetails: ServerDetails) {
         await this.serverRepo.insert(serverDetails)
         const details = await this.serverRepo.getByIdentifer(serverDetails.identifer)
-        cleanLog('Info',`Added server: ${details.id} (${details.identifer})`)
+        log('Info',`Added server: ${details.id} (${details.identifer})`)
         return details.id
     }
 
@@ -37,7 +37,7 @@ export class ServerController {
     async updateDetails(@Param('serverId') serverId: string, @Body() serverDetails: ServerDetails) {
         const details = await this.serverRepo.getByServerId(serverId)
         await this.serverRepo.update({ id: details.id },serverDetails)
-        cleanLog('debug',`Updated server details: ${details.id} (${details.identifer})`)
+        debugLog(`Updated server details: ${details.id} (${details.identifer})`)
         return `Updated server details: ${details.id} (${details.identifer})`
     }
 
@@ -53,7 +53,7 @@ export class ServerController {
         const details = await this.serverRepo.getByServerId(serverId)
         if (details) {
             await this.serverRepo.delete(details.id)
-            cleanLog('Info',`Removed server: ${details.id} (${details.identifer})`)
+            log('Info',`Removed server: ${details.id} (${details.identifer})`)
             return `Removed server: ${details.id} (${details.identifer})`
         }
     }

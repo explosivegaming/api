@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Column, Entity, EntityRepository, OneToOne, PrimaryGeneratedColumn, Repository, ManyToMany, JoinTable } from 'typeorm';
-import { cleanLog, errorLog } from '../lib/log';
+import { debugLog, errorLog } from '../lib/log';
 import { Account, AccountRelations } from './user.entity';
 import { FactorioRole } from './role.factorio.entity';
 
@@ -36,7 +36,7 @@ export class FactorioAccountRepository extends Repository<FactorioAccount> {
             if (found) {
                 return found
             } else {
-                cleanLog('debug',`Created new <factorio> account`)
+                debugLog(`Created new <factorio> account`)
                 const factorioUser = new FactorioAccount(username)
                 await this.insert(factorioUser)
                 return await this.findOne({ name: username }, { relations: ['roles'].concat(AccountRelations) })

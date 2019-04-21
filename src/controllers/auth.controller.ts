@@ -4,7 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import { AccountRepository, Account } from '../entities/user.entity';
 import request = require('request-promise');
 import express = require('express');
-import { cleanLog, errorLog } from '../lib/log';
+import { log, errorLog } from '../lib/log';
 
 const btoa = require('btoa')
 
@@ -28,13 +28,13 @@ export class AuthController {
 
     @Get('/me')
     user(@CurrentUser({ required: true }) user: Account) {
-        cleanLog('debug',`Sent user data for: <${user.id}>`)
+        debugLog(`Sent user data for: <${user.id}>`)
         return user;
     }
 
     @Get('/logout')
     logout(@Req() req: express.Request) {
-        cleanLog('debug',`Logged out session for: <${req.session.user}>`)
+        debugLog(`Logged out session for: <${req.session.user}>`)
         req.session.user = undefined
     }
 
@@ -58,7 +58,7 @@ export class AuthController {
             }
         })
         const access_token = JSON.parse(authBody).access_token
-        cleanLog('debug','Received discord access token')
+        debugLog('Received discord access token')
         const accountBody = await request({
             method: 'GET',
             url: 'http://discordapp.com/api/users/@me',
@@ -67,15 +67,15 @@ export class AuthController {
             }
         })
         const userInfo = JSON.parse(accountBody)
-        cleanLog('debug',`Received discord user data for: <${userInfo.id}>`)
+        debugLog(`Received discord user data for: <${userInfo.id}>`)
         const account = await this.userRepo.getByDiscord(userInfo.id,true,userInfo.username)
-        cleanLog('debug',`Found user account: <${account.id}>`)
+        debugLog(`Found user account: <${account.id}>`)
         req.session.user = account.id
     }
 
     @Get('/keys')
     userKeys(@CurrentUser({ required: true }) user: Account) {
-        cleanLog('debug','Sent user keys')
+        debugLog('Sent user keys')
         return this.userRepo.keys.find({ where: { account: user } })
     }
 
@@ -89,7 +89,7 @@ export class AuthController {
     async revokeUserKey(@CurrentUser({ required: true }) user: Account, @QueryParam('key',{ required: true }) key: string, @Res() res: express.Response) {
         if (await this.userRepo.keys.validateKeyOwnership(user,key)) {
             await this.userRepo.keys.delete(key)
-            cleanLog('debug','Revoked Key')
+            debugLog('Revoked Key')
             return res.send('Key Revoked')
         } else {
             throw new HttpError(401,'Invalid key or Permission Denied.')

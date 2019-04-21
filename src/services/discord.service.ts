@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { AccountRepository } from '../entities/user.entity';
-import { cleanLog } from '../lib/log';
+import { log, debugLog } from '../lib/log';
 import { getCustomRepository } from 'typeorm';
 import { FactorioRoleRepository } from '../entities/role.factorio.entity';
 
@@ -50,7 +50,7 @@ export class DiscordService extends EventEmitter {
         this.devGuild = null
 
         this.client.on('ready',() => {
-            cleanLog('success','Discord bot login successful')
+            log('success','Discord bot login successful')
             if (process.env.DISCORD_DEV_GUILD) {
                 this.devGuild = this.client.guilds.get(process.env.DISCORD_DEV_GUILD)
             }
@@ -63,7 +63,7 @@ export class DiscordService extends EventEmitter {
 
             const rawArgs = message.content.split(' ')
             const commandName = rawArgs.shift().substring(process.env.COMMAND_PREFIX.length).toLowerCase()
-            cleanLog('debug',`Received command: <${commandName}>`)
+            debugLog(`Received command: <${commandName}>`)
             
             const args = []
             let currentIndex: number = 0
@@ -98,7 +98,7 @@ export class DiscordService extends EventEmitter {
 
         require('../commands.discord/index')
 
-        cleanLog('status','Initialized <discord.service>')
+        log('status','Initialized <discord.service>')
     }
 
     // sends a long message, will break the message up into parts so that it will not hit max char limit

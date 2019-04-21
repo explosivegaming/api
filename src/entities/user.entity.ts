@@ -2,7 +2,7 @@ import { User } from 'discord.js';
 import { Service } from 'typedi';
 import { Column, Entity, EntityRepository, getCustomRepository, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { cleanLog, errorLog } from '../lib/log';
+import { debugLog, errorLog } from '../lib/log';
 import { DiscordAccountRepository } from './user.discord.entity';
 import { DiscordAccount } from './user.discord.entity';
 import { FactorioAccount, FactorioAccountRepository } from './user.factorio.entity';
@@ -166,7 +166,7 @@ export class AccountRepository extends Repository<Account> {
         if (found) {
             return found
         } else {
-            cleanLog('debug',`Created new <user> account`)
+            debugLog(`Created new <user> account`)
             const account = new Account()
             account[accountType] = subAccount
             account.permissions = 0

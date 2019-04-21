@@ -1,7 +1,7 @@
 import { Service, Inject } from "typedi";
 import * as socket_io from 'socket.io';
 import { WebServerService } from "./webserver.service";
-import { cleanLog } from "../lib/log";
+import { log } from "../lib/log";
 import { getCustomRepository } from "typeorm";
 import { ServerDetailsRepository, ServerDetail } from "../entities/server.details.entity";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -42,13 +42,13 @@ export class SocketIOService {
             return await this.serverMiddleWare(socket,next)
         })
         this.server.on('connection', socket => {
-            cleanLog('info',`New web socket connection made: ${socket.id}`)
+            log('info',`New web socket connection made: ${socket.id}`)
             socket.on('disconnect', reason => {
                 console.log(`Closed a web socket connection: ${socket.id} ${reason}`);
             })
             this.serverOnConnection(socket)
         })
-        cleanLog('status','Initialized <socketio.service>')
+        log('status','Initialized <socketio.service>')
     }
 
     async serverMiddleWare(socket: SocketIO.Socket, next: (err?: any) => void) {
@@ -68,7 +68,7 @@ export class SocketIOService {
     serverOnConnection(socket) {
         socket.on('details',async act => {
             const server = this.factorioServers[socket.id]
-            cleanLog('info',`Sending server details to: ${server.identifer}`)
+            log('info',`Sending server details to: ${server.identifer}`)
             const now = moment()
             const reset = await this.serverRepo.getResetDate(server.id)
             act(server,now.format('HH:mm'),now.format('YYYY MM DD'),reset)
@@ -76,7 +76,7 @@ export class SocketIOService {
 
         socket.on('roles',async act => {
             const server = this.factorioServers[socket.id]
-            cleanLog('info',`Sending roles to: ${server.identifer}`)
+            log('info',`Sending roles to: ${server.identifer}`)
             const output = []
             const roles = {}
             const discordRoles = await this.discordService.getDiscordRoleSync('displayName')

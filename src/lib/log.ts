@@ -12,11 +12,14 @@ export const consoleColours = {
     debug: Chalk.magentaBright
 }
 
-export function cleanLog(type: string, message: string, stringReplace: object = {}): void {
+export function log(type: string, message: string, stringReplace: object = {}): void {
     const dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
     const logTypeLower = type.toLowerCase()
     const logTypeUpper = type.charAt(0).toUpperCase()+type.toLowerCase().slice(1)
     if (process.env.NODE_ENV === 'production' && logTypeLower === 'debug') return
+    message = message.replace(/<.+>/g,match => {
+        return Chalk.italic.blue(match)
+    })
     for (let replaceKey in stringReplace) {
         message = message.replace(`{${replaceKey}}`,stringReplace[replaceKey])
     }
@@ -28,6 +31,10 @@ export function cleanLog(type: string, message: string, stringReplace: object = 
     }
 }
 
+export function debugLog(message: string, stringReplace: object = {}): void {
+    debugLog(message,stringReplace)
+}
+
 export function errorLog(message: string, stringReplace: object = {}): void {
-    cleanLog('error',message,stringReplace)
+    log('error',message,stringReplace)
 }
