@@ -4,7 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import { AccountRepository, Account } from '../entities/user.entity';
 import request = require('request-promise');
 import express = require('express');
-import { log, errorLog } from '../lib/log';
+import { log, errorLog, debugLog } from '../lib/log';
 
 const btoa = require('btoa')
 
